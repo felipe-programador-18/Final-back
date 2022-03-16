@@ -2,7 +2,7 @@ const express= require('express')
 const api = express()
 const port = process.env.Port || 3000
 const path = require('path')
-const User = require('./models/user')
+const UserModel = require('./models/user')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 
@@ -40,23 +40,26 @@ api.get('/produtos',(req,res, next ) => {
 })
 
 api.use('/login', home)
-api.get('/login', (req, res) =>{res.render('login')})
-api.post('/login', async(req,res) => {
-    const user = await User.findOne({username: req.body.username}) 
-    const isValed = await user.checkPassword(req.body.password)
 
-    res.send( {user, isValed})
-       //isValed
-        
-   })
+api.get('/login', (req, res) =>
+{res.render('login')}
+)
+
+api.post('/login', async(req,res) => {
+    const user = await UserModel.findOne({username: req.body.username}) 
+    const isValid = await user?.checkPassword(req.body.password)
+    res.send({
+        user, isValid
+    })      
+})
 
 
 
 const CreateInitialuser =  async() => {
-    const total = await User.count({username:'felipe programmer'})
+    const total = await UserModel.count({username:'felipe programmer'})
     if(total === 0){
-        const user = new User ({
-            username:'felipe programmer',
+        const user = new UserModel ({
+            username:'felipeprogrammer',
             email:'machadofelipe2016@outlook.com',
             password:'432423marrtints',
         })
