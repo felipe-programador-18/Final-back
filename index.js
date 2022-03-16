@@ -44,6 +44,7 @@ api.get('/login', (req, res) =>{res.render('login')})
 api.post('/login', async(req,res) => {
     const user = await User.findOne({username: req.body.username}) 
     const isValed = await user.checkPassword(req.body.password)
+
     res.send( {user, isValed})
        //isValed
         
