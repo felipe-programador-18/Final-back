@@ -10,7 +10,6 @@ const mongo = process.env.MONGODB || 'mongodb://localhost/catalogo'
 const mongoose= require('mongoose')
 mongoose.Promise = global.Promise 
 
-
 const produtos = require('./routes/produtos')
 const home = require('./routes/home')
 
@@ -48,9 +47,13 @@ api.get('/login', (req, res) =>
 api.post('/login', async(req,res) => {
     const user = await UserModel.findOne({username: req.body.username}) 
     const isValid = await user?.checkPassword(req.body.password)
-    res.send({
-        user, isValid
-    })      
+      
+    if(isValid){
+      req.session.user = user
+      res.redirect('/produtos')
+    }else{
+        res.redirect('/login')
+   }    
 })
 
 
